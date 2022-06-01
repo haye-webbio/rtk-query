@@ -1,14 +1,22 @@
 import { configureStore, ThunkAction, Action } from '@reduxjs/toolkit'
-
-import counterReducer from '../features/counter/counterSlice'
+import { blackfridayApi } from './blackfridayApi'
+import { setupListeners } from '@reduxjs/toolkit/query'
 
 export function makeStore() {
   return configureStore({
-    reducer: { counter: counterReducer },
+     reducer: {
+    [blackfridayApi.reducerPath]: blackfridayApi.reducer,
+  },
+    middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(blackfridayApi.middleware),
   })
 }
 
+
+
 const store = makeStore()
+
+setupListeners(store.dispatch)
 
 export type AppState = ReturnType<typeof store.getState>
 
